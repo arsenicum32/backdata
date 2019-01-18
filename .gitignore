@@ -1,0 +1,5 @@
+users/*.json
+creds.json
+package-lock.json
+node_modules/
+interests/*.png

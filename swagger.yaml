@@ -1,0 +1,504 @@
+swagger: "2.0"
+info:
+  description: "Datafuel API docs"
+  version: "1.0.0"
+  title: "Datafuel"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "hellokalash@datafuel.ru"
+host: "api.datafuel.ru"
+basePath: "/"
+tags:
+- name: "VK users"
+  description: "VK user"
+- name: "VK stats"
+  description: "VK stats"
+- name: "Datafuel user"
+  description: "Datafuel User"
+schemes:
+- "https"
+securityDefinitions:
+  basicAuth:
+    type: basic
+security:
+  - basicAuth: []
+paths:
+  /user/{userId}:
+    get:
+      tags:
+      - "VK users"
+      summary: "Get user by ID"
+      description: "Returns a single user with specified fields"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "userId"
+        in: "path"
+        description: "ID of user to return"
+        required: true
+        type: "integer"
+        format: "int64"
+        minimum: 1
+      - name: "fields"
+        description: "Fields to select"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum: ["sex", "bdate",
+        "screen_name", "country", "city", "site", "twitter", "facebook",
+        "instagram", "mobile_phone", "IE", "SN", "TF", "JP", "MBTI",
+        "friends", "groups"]
+          format: "str"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/VKUser"
+        400:
+          description: "Error in requests params"
+          schema:
+            $ref: "#/definitions/Error"
+        402:
+          description: "No more requests left"
+        404:
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/Error"
+  /users:
+    post:
+      tags:
+      - "VK users"
+      summary: "Get users by list of IDs"
+      description: "Returns a multiple users with specified fields and filters"
+      produces:
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Request parameters"
+        schema:
+          type: "object"
+          required: 
+            - "ids"
+          properties:
+            ids:
+              description: "Users' IDs to return"
+              type: "array"
+              items:
+                type: "integer"
+                format: "int64"
+                minimum: 1
+            fields:
+              description: "Fields to select"
+              type: "array"
+              items:
+                type: "string"
+                enum: ["sex", "bdate",
+              "screen_name", "country", "city", "site", "twitter", "facebook",
+              "instagram", "mobile_phone", "IE", "SN", "TF", "JP", "MBTI",
+              "friends", "groups"]
+                format: "str"
+            filters:
+              description: "Filters for basic users selecting"
+              type: "object"
+              properties:
+                age_bounds:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                      from:
+                        type: "integer"
+                        format: "int8"
+                        minimum: 1
+                        maximum: 100
+                        default: 1
+                      to:
+                        type: "integer"
+                        format: "int8"
+                        minimum: 1
+                        maximum: 100
+                        default: 100
+                city_ids:
+                  type: "array"
+                  items:
+                    type: "integer"
+                    format: "int64"
+                country_ids:
+                  type: "array"
+                  items:
+                    type: "integer"
+                    format: "int64"
+                sex:
+                  type: "array"
+                  items:
+                    type: "string"
+                    enum: ["male", "female"]
+                    format: "str"
+                MBTIs:
+                  type: "array"
+                  items:
+                    type: "string"
+                    enum: ["ISTJ", "ISTP", "ISFJ", "ISFP", "INTJ", "INTP", "INFJ", "INFP", "ESTJ", "ESTP", "ESFJ", "ESFP", "ENTJ", "ENTP", "ENFJ", "ENFP"]
+                    format: "str"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/VKUser"
+        400:
+          description: "Error in requests params"
+          schema:
+            $ref: "#/definitions/Error"
+        402:
+          description: "No more requests left"
+        404:
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/Error"
+            
+  /stats/users:
+    post:
+      tags:
+      - "VK stats"
+      summary: "Get users stats by list of IDs"
+      description: "Returns a stats for multiple users"
+      produces:
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Request parameters"
+        schema:
+          type: "object"
+          required: 
+            - "ids"
+          properties:
+            ids:
+              description: "Users' IDs to return"
+              type: "array"
+              items:
+                type: "integer"
+                format: "int64"
+                minimum: 1
+            filters:
+              description: "Filters for basic users selecting"
+              type: "object"
+              properties:
+                age_bounds:
+                  type: "array"
+                  items:
+                    type: "object"
+                    properties:
+                      from:
+                        type: "integer"
+                        format: "int8"
+                        minimum: 1
+                        maximum: 100
+                        default: 1
+                      to:
+                        type: "integer"
+                        format: "int8"
+                        minimum: 1
+                        maximum: 100
+                        default: 100
+                city_ids:
+                  type: "array"
+                  items:
+                    type: "integer"
+                    format: "int64"
+                country_ids:
+                  type: "array"
+                  items:
+                    type: "integer"
+                    format: "int64"
+                sex:
+                  type: "array"
+                  items:
+                    type: "string"
+                    enum: ["male", "female"]
+                    format: "str"
+                MBTIs:
+                  type: "array"
+                  items:
+                    type: "string"
+                    enum: ["ISTJ", "ISTP", "ISFJ", "ISFP", "INTJ", "INTP", "INFJ", "INFP", "ESTJ", "ESTP", "ESFJ", "ESFP", "ENTJ", "ENTP", "ENFJ", "ENFP"]
+                    format: "str"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Stats"
+        400:
+          description: "Error in requests params"
+          schema:
+            $ref: "#/definitions/Error"
+        402:
+          description: "No more requests left"
+        404:
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/Error"
+            
+  /me:
+    get:
+      tags:
+      - "Datafuel user"
+      summary: "Get info about logged in user"
+      description: "Returns requests count and username"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+                format: "str"
+              requests_count:
+                type: "integer"
+      
+definitions:
+  VKUser:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      first_name:
+        type: "string"
+        format: "str"
+      last_name:
+        type: "string"
+        format: "str"
+      screen_name:
+        type: "string"
+        format: "str"
+      deactivated:
+        type: "boolean"
+        format: "bool"
+      sex:
+        type: "string"
+        enum: ["male", "female"]
+        format: "str"
+      bdate:
+        type: "string"
+        format: "date"
+      city:
+          $ref: "#/definitions/City"
+      country:
+          $ref: "#/definitions/Country"
+      site:
+        type: "string"
+        format: "str"
+      twitter:
+        type: "string"
+        format: "str"
+      instagram:
+        type: "string"
+        format: "str"
+      facebook:
+        type: "string"
+        format: "str"
+      mobile_phone:
+        type: "string"
+        format: "str"
+      MBTI:
+        type: "string"
+        enum: ["ISTJ", "ISTP", "ISFJ", "ISFP", "INTJ", "INTP", "INFJ", "INFP", "ESTJ", "ESTP", "ESFJ", "ESFP", "ENTJ", "ENTP", "ENFJ", "ENFP"]
+        format: "str"
+      IE:
+        type: "integer"
+        format: "int8"
+        minimum: 0
+        maximum: 100
+      SN:
+        type: "integer"
+        format: "int8"
+        minimum: 0
+        maximum: 100
+      TF:
+        type: "integer"
+        format: "int8"
+        minimum: 0
+        maximum: 100
+      JP:
+        type: "integer"
+        format: "int8"
+        minimum: 0
+        maximum: 100
+      friends:
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+      groups:
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+  City:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        format: "str"
+  Country:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        format: "str"
+  Stats:
+    type: "object"
+    properties:
+      age:
+        type: "object"
+        properties:
+          mean:
+            type: "number"
+            format: "double"
+          std:
+            type: "number"
+            format: "double"
+          not_null_count:
+            type: "integer"
+            format: "int64"
+      friends_count:
+        type: "object"
+        properties:
+          mean:
+            type: "number"
+            format: "double"
+          std:
+            type: "number"
+            format: "double"
+          not_null_count:
+            type: "integer"
+            format: "int64"
+      groups_count:
+        type: "object"
+        properties:
+          mean:
+            type: "number"
+            format: "double"
+          std:
+            type: "number"
+            format: "double"
+          not_null_count:
+            type: "integer"
+            format: "int64"
+      topn_groups:
+        type: "array"
+        items:
+            type: "object"
+            properties:
+              id:
+                type: "integer"
+                format: "int64"
+              count:
+                type: "integer"
+                format: "int64"
+      MBTI:
+        type: "object"
+        properties:
+          types_distribution:
+            type: "object"
+            properties:
+              ISTJ:
+                type: "integer"
+                format: "int64"
+              ISTP:
+                type: "integer"
+                format: "int64"
+              ISFJ:
+                type: "integer"
+                format: "int64"
+              ISFP:
+                type: "integer"
+                format: "int64"
+              INTJ:
+                type: "integer"
+                format: "int64"
+              INTP:
+                type: "integer"
+                format: "int64"
+              INFJ:
+                type: "integer"
+                format: "int64"
+              INFP:
+                type: "integer"
+                format: "int64"
+              ESTJ:
+                type: "integer"
+                format: "int64"
+              ESTP:
+                type: "integer"
+                format: "int64"
+              ESFJ:
+                type: "integer"
+                format: "int64"
+              ESFP:
+                type: "integer"
+                format: "int64"
+              ENTJ:
+                type: "integer"
+                format: "int64"
+              ENTP:
+                type: "integer"
+                format: "int64"
+              ENFJ:
+                type: "integer"
+                format: "int64"
+              ENFP:
+                type: "integer"
+                format: "int64"
+          basis_distribution:
+            type: "object"
+            properties:
+              IE:
+                type: "object"
+                properties:
+                  mean:
+                    type: "number"
+                    format: "double"
+              SN:
+                type: "object"
+                properties:
+                  mean:
+                    type: "number"
+                    format: "double"
+              TF:
+                type: "object"
+                properties:
+                  mean:
+                    type: "number"
+                    format: "double"
+              JP:
+                type: "object"
+                properties:
+                  mean:
+                    type: "number"
+                    format: "double"
+  Error:
+    type: "object"
+    properties:
+      error:
+        type: "string"
+        format: "str"

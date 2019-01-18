@@ -1,0 +1,6 @@
+{
+  "frontURL": "http://datafuel.plakot.ru",
+  "backURL": "http://backend.plakot.ru/",
+  "port": 7000,
+  "env": "DEV"
+}
